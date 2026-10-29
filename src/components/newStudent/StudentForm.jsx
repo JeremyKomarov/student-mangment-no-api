@@ -1,16 +1,44 @@
 import { useState } from "react";
 import "./StudentForm.css";
+import dateFormatting from "../../utils/dateUtils";
 
-function StudentForm() {
+function StudentForm(props) {
   const [enteredUserName, setEnteredUserName] = useState("");
+  const [enteredCourseName, setEnteredCourseName] = useState("");
+  const [enteredStartDate, setEnteredStartDate] = useState("");
+
+  const resetForm = () => {
+    setEnteredUserName("");
+    setEnteredCourseName("");
+    setEnteredStartDate("");
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const registeredStudentData = {
+      studentName: enteredUserName,
+      course: enteredCourseName,
+      date: enteredStartDate,
+    };
+
+    props.onSaveRegisteredStudentDataHandler(registeredStudentData);
+
+    resetForm();
+  };
 
   const userNameChangeHandler = (event) => {
     setEnteredUserName(event.target.value);
-    console.log("This student name is changed: " + enteredUserName);
+  };
+
+  const courseNameChangeHandler = (event) => {
+    const enteredCourse = event.target.value;
+    setEnteredCourseName(enteredCourse);
+    setEnteredStartDate(dateFormatting(props.courses[enteredCourse].startDate));
   };
 
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className="new-registration__controls">
         <div className="new-registration__control">
           <label>Student Name</label>
@@ -23,7 +51,12 @@ function StudentForm() {
         </div>
         <div className="new-registration__control">
           <label>Course Name</label>
-          <select className="course-selection" defaultValue={""} required>
+          <select
+            className="course-selection"
+            onChange={courseNameChangeHandler}
+            value={enteredCourseName}
+            required
+          >
             <option value="" disabled>
               Please Choose A Course
             </option>
@@ -35,7 +68,7 @@ function StudentForm() {
         </div>
         <div className="new-registration__control">
           <label>Course Start Date</label>
-          <input type="date"></input>
+          <input type="date" value={enteredStartDate} disabled></input>
         </div>
         <div className="new-registration__actions">
           <button type="button">Cancel</button>

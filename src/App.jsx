@@ -44,7 +44,7 @@ const DUMMY_REGISTERED_STUDENTS = [
 function App() {
   return (
     <div>
-      <NewStudent />
+      <NewStudent courses={DUMMY_AVAILABLE_COURSES} />
       <RegisteredStudent
         registeredStudent={DUMMY_REGISTERED_STUDENTS[0]}
         course={DUMMY_AVAILABLE_COURSES.fullstack}

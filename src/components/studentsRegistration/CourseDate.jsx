@@ -1,15 +1,12 @@
+import dateFormatting from "../../utils/dateUtils";
 import "./CourseDate.css";
 
 function CourseDate(props) {
-  const month = props.date.toLocaleDateString("en-US", { month: "2-digit" });
-  const day = props.date.toLocaleDateString("en-US", { day: "2-digit" });
-  const year = props.date.getFullYear();
+  const formattedDate = dateFormatting(props.date);
 
   return (
     <div className="registration-date">
-      <div>
-        {day} / {month} / {year}
-      </div>
+      <div>{formattedDate}</div>
     </div>
   );
 }
