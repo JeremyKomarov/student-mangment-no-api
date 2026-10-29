@@ -1,3 +1,4 @@
+import NewStudent from "./components/newStudent/NewStudent";
 import RegisteredStudent from "./components/studentsRegistration/RegisteredStudent";
 
 const DUMMY_AVAILABLE_COURSES = {
@@ -42,7 +43,8 @@ const DUMMY_REGISTERED_STUDENTS = [
 
 function App() {
   return (
-    <>
+    <div>
+      <NewStudent />
       <RegisteredStudent
         registeredStudent={DUMMY_REGISTERED_STUDENTS[0]}
         course={DUMMY_AVAILABLE_COURSES.fullstack}
@@ -51,7 +53,7 @@ function App() {
         registeredStudent={DUMMY_REGISTERED_STUDENTS[1]}
         course={DUMMY_AVAILABLE_COURSES.qa}
       />
-    </>
+    </div>
   );
 }
 
