@@ -1,5 +1,7 @@
+import { useState } from "react";
 import NewStudent from "./components/newStudent/NewStudent";
 import RegisteredStudent from "./components/studentsRegistration/RegisteredStudent";
+import Registrations from "./components/studentsRegistration/Registrations";
 
 const DUMMY_AVAILABLE_COURSES = {
   fullstack: {
@@ -42,16 +44,25 @@ const DUMMY_REGISTERED_STUDENTS = [
 ];
 
 function App() {
+  const [registeredStudents, setRegisteredStudents] = useState(
+    DUMMY_REGISTERED_STUDENTS || [],
+  );
+
+  const addStudentHandler = (registeredStudent) => {
+    setRegisteredStudents((prevStudents) => {
+      return [registeredStudent, ...prevStudents];
+    });
+  };
+
   return (
     <div>
-      <NewStudent courses={DUMMY_AVAILABLE_COURSES} />
-      <RegisteredStudent
-        registeredStudent={DUMMY_REGISTERED_STUDENTS[0]}
-        course={DUMMY_AVAILABLE_COURSES.fullstack}
+      <NewStudent
+        onAddStudentHandler={addStudentHandler}
+        courses={DUMMY_AVAILABLE_COURSES}
       />
-      <RegisteredStudent
-        registeredStudent={DUMMY_REGISTERED_STUDENTS[1]}
-        course={DUMMY_AVAILABLE_COURSES.qa}
+      <Registrations
+        registeredStudents={registeredStudents}
+        courses={DUMMY_AVAILABLE_COURSES}
       />
     </div>
   );

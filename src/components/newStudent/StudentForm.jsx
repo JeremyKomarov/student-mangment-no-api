@@ -25,6 +25,7 @@ function StudentForm(props) {
     props.onSaveRegisteredStudentDataHandler(registeredStudentData);
 
     resetForm();
+    props.onStopEditingHandler();
   };
 
   const userNameChangeHandler = (event) => {
@@ -71,7 +72,9 @@ function StudentForm(props) {
           <input type="date" value={enteredStartDate} disabled></input>
         </div>
         <div className="new-registration__actions">
-          <button type="button">Cancel</button>
+          <button onClick={props.onStopEditingHandler} type="button">
+            Cancel
+          </button>
           <button type="submit">Register Student</button>
         </div>
       </div>
