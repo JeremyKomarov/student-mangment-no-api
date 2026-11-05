@@ -41,6 +41,11 @@ const DUMMY_REGISTERED_STUDENTS = [
     studentName: "David Katz",
     course: "qa",
   },
+  {
+    id: "3",
+    studentName: "Chec Chbez",
+    course: "qa",
+  },
 ];
 
 function App() {
