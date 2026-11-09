@@ -1,74 +1,84 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewStudent from "./components/newStudent/NewStudent";
-import RegisteredStudent from "./components/studentsRegistration/RegisteredStudent";
 import Registrations from "./components/studentsRegistration/Registrations";
-
-const DUMMY_AVAILABLE_COURSES = {
-  fullstack: {
-    id: "1",
-    name: "fullstack",
-    displayName: "Full Stack Course",
-    startDate: new Date(2026, 7, 1),
-  },
-  qa: {
-    id: "2",
-    name: "qa",
-    displayName: "QA Course",
-    startDate: new Date(2026, 2, 30),
-  },
-  cyber: {
-    id: "3",
-    name: "cyber",
-    displayName: "Cyber  Course",
-    startDate: new Date(2026, 4, 5),
-  },
-  product: {
-    id: "4",
-    name: "product",
-    displayName: "Product Course",
-    startDate: new Date(2026, 6, 30),
-  },
-};
-
-const DUMMY_REGISTERED_STUDENTS = [
-  {
-    id: "1",
-    studentName: "Jeremy Komarov",
-    course: "fullstack",
-  },
-  {
-    id: "2",
-    studentName: "David Katz",
-    course: "qa",
-  },
-  {
-    id: "3",
-    studentName: "Chec Chbez",
-    course: "qa",
-  },
-];
+import { createStudent, getAllCourses, getAllStudents } from "./services/api";
+import {
+  normalizeCourseDate,
+  normalizeCourseName,
+  normalizeStudentFullName,
+} from "./utils/utils";
 
 function App() {
-  const [registeredStudents, setRegisteredStudents] = useState(
-    DUMMY_REGISTERED_STUDENTS || [],
-  );
+  const [registeredStudents, setRegisteredStudents] = useState([]);
+  const [availableCoruses, setAvailableCoruses] = useState([]);
 
-  const addStudentHandler = (registeredStudent) => {
-    setRegisteredStudents((prevStudents) => {
-      return [registeredStudent, ...prevStudents];
+  useEffect(() => {
+    getAllCourses().then((res) => {
+      const courses = res.data.map((course) => {
+        return {
+          ...course,
+          displayName: normalizeCourseName(course.name),
+          startDate: normalizeCourseDate(course.startDate),
+        };
+      });
+
+      getAllStudents().then((res) => {
+        const students = res.data.map((student) => {
+          return {
+            ...student,
+            studentName: normalizeStudentFullName(
+              student.firstName,
+              student.lastName,
+            ),
+          };
+        });
+
+        setAvailableCoruses(courses);
+        setRegisteredStudents(students);
+      });
+    });
+  }, []);
+
+  const addStudentHandler = (student) => {
+    const splittedStudentName = student.studentName.split(" ");
+    const studentToCreate = {
+      firstName: splittedStudentName[0],
+      lastName: splittedStudentName[1],
+      courseId: student.courseId,
+    };
+
+    createStudent(studentToCreate).then((res) => {
+      getAllStudents().then((res) => {
+        const students = res.data.map((student) => {
+          return {
+            ...student,
+            studentName: normalizeStudentFullName(
+              student.firstName,
+              student.lastName,
+            ),
+          };
+        });
+        setRegisteredStudents(students);
+      });
     });
   };
 
   return (
     <div>
-      <NewStudent
-        onAddStudentHandler={addStudentHandler}
-        courses={DUMMY_AVAILABLE_COURSES}
-      />
-      <Registrations
-        registeredStudents={registeredStudents}
-        courses={DUMMY_AVAILABLE_COURSES}
-      />
+      {availableCoruses.length === 0 ? (
+        "Loading...."
+      ) : (
+        <>
+          <NewStudent
+            onAddStudentHandler={addStudentHandler}
+            courses={availableCoruses}
+          />
+          <Registrations
+            registeredStudents={registeredStudents}
+            courses={availableCoruses}
+          />
+        </>
+      )}
     </div>
   );
 }

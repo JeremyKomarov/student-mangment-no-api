@@ -1,4 +1,4 @@
-import dateFormatting from "../../utils/dateUtils";
+import { dateFormatting } from "../../utils/utils";
 import "./CourseDate.css";
 
 function CourseDate(props) {

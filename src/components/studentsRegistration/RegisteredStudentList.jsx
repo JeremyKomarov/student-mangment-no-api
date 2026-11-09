@@ -1,8 +1,8 @@
 import "./RegisteredStudentList.css";
 import RegisteredStudent from "./RegisteredStudent";
 
-function RegisteredStudentList(props) {
-  if (props.registeredStudents.length === 0) {
+function RegisteredStudentList({ registeredStudents, course }) {
+  if (registeredStudents.length === 0) {
     return (
       <h2 className="registrations-list__fallback">No Students Registered</h2>
     );
@@ -10,12 +10,12 @@ function RegisteredStudentList(props) {
 
   return (
     <ul className="registrations-list">
-      {props.registeredStudents.map((student) => {
+      {registeredStudents.map((student) => {
         return (
           <RegisteredStudent
             key={student.id}
             registeredStudent={student}
-            course={props.course}
+            course={course}
           />
         );
       })}

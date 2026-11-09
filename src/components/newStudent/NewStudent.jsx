@@ -2,17 +2,8 @@ import { useState } from "react";
 import "./NewStudent.css";
 import StudentForm from "./StudentForm";
 
-function NewStudent(props) {
+function NewStudent({ courses, onAddStudentHandler }) {
   const [isEditing, setIsEditing] = useState(false);
-
-  const saveRegisteredStudentDataHandler = (enteredRegisteredStudentData) => {
-    const registeredStudentData = {
-      ...enteredRegisteredStudentData,
-      id: Math.random().toString(),
-    };
-
-    props.onAddStudentHandler(registeredStudentData);
-  };
 
   const startEditingHandler = () => {
     setIsEditing(true);
@@ -30,8 +21,8 @@ function NewStudent(props) {
       {isEditing && (
         <StudentForm
           onStopEditingHandler={stopEditingHandler}
-          courses={props.courses}
-          onSaveRegisteredStudentDataHandler={saveRegisteredStudentDataHandler}
+          courses={courses}
+          onSaveRegisteredStudentDataHandler={onAddStudentHandler}
         />
       )}
     </div>

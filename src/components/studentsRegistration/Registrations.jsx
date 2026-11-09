@@ -4,33 +4,38 @@ import RegisteredStudentList from "./RegisteredStudentList";
 import "./Registrations.css";
 import RegisteredStudentChart from "./RegisteredStudentChart";
 
-function Registrations(props) {
-  const [filteredCourse, setFilteredCourse] = useState("fullstack");
+function Registrations({ registeredStudents, courses }) {
+  const [filteredCourse, setFilteredCourse] = useState(courses[0]);
 
-  const filterChnageHandler = (selectedCourse) => {
-    setFilteredCourse(selectedCourse);
+  const filterChnageHandler = (selectedCourseId) => {
+    const castedSelectedCourseId = Number(selectedCourseId);
+
+    const foundedCourse = courses.find((course) => {
+      return (course.id = castedSelectedCourseId);
+    });
+
+    setFilteredCourse(foundedCourse);
   };
 
-  const filteredRegisteredStudent = props.registeredStudents.filter(
-    (student) => {
-      return student.course === filteredCourse;
-    },
-  );
+  const filteredRegisteredStudent = registeredStudents.filter((student) => {
+    return student.courseId === filteredCourse.id;
+  });
 
   return (
     <div className="registrations card">
       <RegisteredStudentChart
-        registeredStudents={props.registeredStudents}
-        courses={props.courses}
+        registeredStudents={registeredStudents}
+        courses={courses}
       />
 
       <RegisteredStudentFilter
         selected={filteredCourse}
         onFilterChnageHandler={filterChnageHandler}
+        courses={courses}
       />
       <RegisteredStudentList
         registeredStudents={filteredRegisteredStudent}
-        course={props.courses[filteredCourse]}
+        course={filteredCourse}
       />
     </div>
   );
