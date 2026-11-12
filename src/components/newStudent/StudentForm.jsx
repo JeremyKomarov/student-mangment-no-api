@@ -1,41 +1,53 @@
 import { useState } from "react";
 import "./StudentForm.css";
-import dateFormatting from "../../utils/dateUtils";
+import { dateFormatting } from "../../utils/utils";
+import Options from "../shared/Options";
 
 function StudentForm(props) {
+  const { onSaveRegisteredStudentDataHandler, onStopEditingHandler, courses } =
+    props;
+
   const [enteredUserName, setEnteredUserName] = useState("");
-  const [enteredCourseName, setEnteredCourseName] = useState("");
+  const [enteredCourseId, setEnteredCourseId] = useState("");
   const [enteredStartDate, setEnteredStartDate] = useState("");
 
   const resetForm = () => {
     setEnteredUserName("");
-    setEnteredCourseName("");
+    setEnteredCourseId("");
     setEnteredStartDate("");
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
+    const splittedStudentName = enteredUserName.split(" ");
 
     const registeredStudentData = {
-      studentName: enteredUserName,
-      course: enteredCourseName,
-      date: enteredStartDate,
+      courseId: enteredCourseId,
+      firstName: splittedStudentName[0],
+      lastName: splittedStudentName[1],
     };
 
-    props.onSaveRegisteredStudentDataHandler(registeredStudentData);
+    onSaveRegisteredStudentDataHandler(registeredStudentData);
 
     resetForm();
-    props.onStopEditingHandler();
+    onStopEditingHandler();
   };
 
   const userNameChangeHandler = (event) => {
     setEnteredUserName(event.target.value);
   };
 
-  const courseNameChangeHandler = (event) => {
-    const enteredCourse = event.target.value;
-    setEnteredCourseName(enteredCourse);
-    setEnteredStartDate(dateFormatting(props.courses[enteredCourse].startDate));
+  const courseIdChangeHandler = (event) => {
+    const enteredCourseId = Number(event.target.value);
+
+    const foundedCourse = courses.find((course) => {
+      return course.id === enteredCourseId;
+    });
+
+    setEnteredCourseId(foundedCourse.id);
+
+    const formattedDate = dateFormatting(foundedCourse.startDate);
+    setEnteredStartDate(formattedDate);
   };
 
   return (
@@ -54,17 +66,14 @@ function StudentForm(props) {
           <label>Course Name</label>
           <select
             className="course-selection"
-            onChange={courseNameChangeHandler}
-            value={enteredCourseName}
+            onChange={courseIdChangeHandler}
+            value={enteredCourseId}
             required
           >
             <option value="" disabled>
               Please Choose A Course
             </option>
-            <option value="fullstack">Fullstack Course</option>
-            <option value="qa">QA Course</option>
-            <option value="cyber">Cyber Course</option>
-            <option value="product">Product Management Course</option>
+            <Options options={courses} />
           </select>
         </div>
         <div className="new-registration__control">
@@ -72,7 +81,7 @@ function StudentForm(props) {
           <input type="date" value={enteredStartDate} disabled></input>
         </div>
         <div className="new-registration__actions">
-          <button onClick={props.onStopEditingHandler} type="button">
+          <button onClick={onStopEditingHandler} type="button">
             Cancel
           </button>
           <button type="submit">Register Student</button>
